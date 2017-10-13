@@ -1,4 +1,3 @@
-var particles = [];
 var fireplaces = [];
 
 /**
@@ -15,15 +14,11 @@ function setup() {
 function draw() {
   background(51);
   fireplaces.forEach(fireplace => {
-    fireplace.particles.push(new Particle(fireplace.x, fireplace.y));
-    fireplace.particles.forEach((p, idx, objects) => {
-      p.update();
-      p.show();
-    });
-    fireplace.particles = fireplace.particles.filter(p => !p.shouldBeDeleted())
+    fireplace.update();
+    fireplace.show();
   });
 }
 
 function mouseClicked() {
-  fireplaces.push({x:mouseX, y:mouseY, particles:[]});
+  fireplaces.push(new Fireplace(mouseX, mouseY));
 }
