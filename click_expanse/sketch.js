@@ -3,16 +3,24 @@ let grid;
 
 let colSize;
 let rowSize;
-const rows = 20;
-const cols = 20;
+const rows = 40;
+const cols = 50;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(51);
-  stroke(255);
+  fill(255);
   colSize = floor( width / cols);
   rowSize = floor( height / rows);
   grid = new Grid(cols, rows);
+  for(let col = 0; col < cols; ++col) {
+    for(let row = 0; row < rows; ++row) {
+      if(grid.getCell(col,row)){
+        rect(col * colSize, row * rowSize, colSize, rowSize);
+      }
+    }
+  }
+  frameRate(5);
 }
 
 function draw() {
@@ -30,8 +38,8 @@ function draw() {
 
 function mousePressed() {
   if (mouseX > width || mouseY > height) return;
-  var c = floor(mouseX/colSize);
-  var r = floor(mouseY/rowSize);
+  let c = floor(mouseX/colSize);
+  let r = floor(mouseY/rowSize);
   if(!grid.getCell(c,r)) {
     grid.setCell(c,r);
   }
@@ -43,9 +51,22 @@ class Grid {
     this.cols = cols; 
     this.rows = rows;
     this.cells = new Array(cols);
-    for (var col = 0; col < cols; col++) {
+    this.initCell = 0;
+    for (let col = 0; col < cols; col++) {
       this.cells[col] = new Array(rows);      
     }
+    this.init();
+  }
+
+  init() {
+    for(let col = 0; col < this.cols; col++) {
+      for(let row = 0; row < this.rows; row++) {
+        if(random() < this.initCell) {
+          this.cells[col][row] = true;
+        }
+      }
+    }
+    this.generateStructures();    
   }
 
   setCell(col, row) {
@@ -63,36 +84,83 @@ class Grid {
     return this.cells[col][row];
   }
 
+  /* Structures can be:
+     - Blinker
+       3*3
+       ...    .-.
+       --- => .-.
+       ...    .-.
+     - Planner 
+       3*3
+      .-.
+      ..-
+      ---      
+   */
+  generateStructures(numberOfStructures) {
+    let middleW = floor(this.cols / 2);
+    let middleH = floor(this.rows / 2);
+    if(random() > 0.5) {
+      // Blinker
+      this.cells[middleW-1][middleH-1] = undefined;
+      this.cells[middleW][middleH-1] = undefined;
+      this.cells[middleW+1][middleH-1] = undefined;
+      this.cells[middleW-1][middleH] = true;
+      this.cells[middleW][middleH] = true;
+      this.cells[middleW+1][middleH] = true;
+      this.cells[middleW-1][middleH+1] = undefined;
+      this.cells[middleW][middleH+1] = undefined;
+      this.cells[middleW+1][middleH+1] = undefined;
+    } else {
+      // Planner
+      this.cells[middleW-1][middleH-1] = undefined;
+      this.cells[middleW][middleH-1] = true;
+      this.cells[middleW+1][middleH-1] = undefined;
+      this.cells[middleW-1][middleH] = undefined;
+      this.cells[middleW][middleH] = undefined;
+      this.cells[middleW+1][middleH] = true;
+      this.cells[middleW-1][middleH+1] = true;
+      this.cells[middleW][middleH+1] = true;
+      this.cells[middleW+1][middleH+1] = true;
+    }
+    console.log(this.getLivingNeighbors(middleW-1,middleH-1) );
+    console.log(this.getLivingNeighbors(middleW,middleH-1));
+    console.log(this.getLivingNeighbors(middleW+1,middleH-1));
+    console.log(this.getLivingNeighbors(middleW-1,middleH));
+    console.log(this.getLivingNeighbors(middleW,middleH));
+    console.log(this.getLivingNeighbors(middleW+1,middleH));
+    console.log(this.getLivingNeighbors(middleW-1,middleH+1));
+    console.log(this.getLivingNeighbors(middleW,middleH+1));
+    console.log(this.getLivingNeighbors(middleW+1,middleH+1));
+  }
+
   update() {
     let tempCells = new Array(cols);
     for (var col = 0; col < cols; col++) {
       tempCells[col] = new Array(rows);      
     } 
-    for(let col = 0; col < cols; ++col) {
-      for(let row = 0; row < rows; ++row) {
-        if(this.getCell(col,row)){
+    for(let col = 1; col < cols -1; ++col) {
+      for(let row = 1; row < rows -1; ++row) {
+        let livingCells = this.getLivingNeighbors(col,row);
+        if(livingCells == 3) {
           tempCells[col][row] = true;
-          this.getNeighbors(col,row).forEach(cell => tempCells[cell.col][cell.row] = 111);
-        }
+        } else if(livingCells == 2) {
+          tempCells[col][row] = this.cells[col][row];
+        } 
       }
     }
     this.cells = tempCells;    
   }
-  getNeighbors(col,row) {
-    let neighbors = [];
-    if(col > 0) {
-      neighbors.push({col: col-1, row:row});
-    } 
-    if(row > 0) {
-      neighbors.push({col: col, row:row-1});
+  getLivingNeighbors(col,row) {
+    let counter = 0;
+    for(let i = -1; i <= 1;i++) {
+      for(let j = -1; j <= 1;j++) {
+        if(i == 0 && j == 0) {
+          continue;
+        }
+        if(this.cells[col+i][row +j]) 
+          counter ++;
+      }
     }
-    if(col < this.cols - 1) {
-      neighbors.push({col: col+1, row:row});
-    }
-    if(row < this.rows - 1) {
-      neighbors.push({col: col, row:row+1});
-    }
-    return neighbors;
+    return counter;
   }
-
 }
