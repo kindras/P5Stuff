@@ -1,26 +1,26 @@
 let cells = [];
 let grid;
 
-let colSize;
-let rowSize;
-const rows = 40;
-const cols = 50;
+const rectSize = 20;
+let rows;
+let cols;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(51);
   fill(255);
-  colSize = floor( width / cols);
-  rowSize = floor( height / rows);
+
+  rows = floor( height / rectSize);
+  cols = floor( width  / rectSize);
   grid = new Grid(cols, rows);
   for(let col = 0; col < cols; ++col) {
     for(let row = 0; row < rows; ++row) {
       if(grid.getCell(col,row)){
-        rect(col * colSize, row * rowSize, colSize, rowSize);
+        rect(col * rectSize, row * rectSize, rectSize, rectSize);
       }
     }
   }
-  frameRate(5);
+  frameRate(10);
 }
 
 function draw() {
@@ -30,7 +30,7 @@ function draw() {
   for(let col = 0; col < cols; ++col) {
     for(let row = 0; row < rows; ++row) {
       if(grid.getCell(col,row)){
-        rect(col * colSize, row * rowSize, colSize, rowSize);
+        rect(col * rectSize, row * rectSize, rectSize, rectSize);
       }
     }
   }
@@ -38,8 +38,8 @@ function draw() {
 
 function mousePressed() {
   if (mouseX > width || mouseY > height) return;
-  let c = floor(mouseX/colSize);
-  let r = floor(mouseY/rowSize);
+  let c = floor(mouseX/rectSize);
+  let r = floor(mouseY/rectSize);
   if(!grid.getCell(c,r)) {
     grid.setCell(c,r);
   }
@@ -97,40 +97,21 @@ class Grid {
       ---      
    */
   generateStructures(numberOfStructures) {
-    let middleW = floor(this.cols / 2);
-    let middleH = floor(this.rows / 2);
-    if(random() > 0.5) {
-      // Blinker
-      this.cells[middleW-1][middleH-1] = undefined;
-      this.cells[middleW][middleH-1] = undefined;
-      this.cells[middleW+1][middleH-1] = undefined;
-      this.cells[middleW-1][middleH] = true;
-      this.cells[middleW][middleH] = true;
-      this.cells[middleW+1][middleH] = true;
-      this.cells[middleW-1][middleH+1] = undefined;
-      this.cells[middleW][middleH+1] = undefined;
-      this.cells[middleW+1][middleH+1] = undefined;
-    } else {
-      // Planner
-      this.cells[middleW-1][middleH-1] = undefined;
-      this.cells[middleW][middleH-1] = true;
-      this.cells[middleW+1][middleH-1] = undefined;
-      this.cells[middleW-1][middleH] = undefined;
-      this.cells[middleW][middleH] = undefined;
-      this.cells[middleW+1][middleH] = true;
-      this.cells[middleW-1][middleH+1] = true;
-      this.cells[middleW][middleH+1] = true;
-      this.cells[middleW+1][middleH+1] = true;
+    const structures = [
+      [[undefined,undefined,undefined],[true,true,true],[undefined,undefined,undefined]],
+      [[undefined,true,undefined],[undefined,undefined,true],[true,true,true]]
+    ];
+    for(let i = 0; i < 180; ++i) {
+      let middleW = floor(random(1,this.cols - 1));
+      let middleH = floor(random(1,this.rows - 1));
+      let structure = random(structures);
+      console.log(structure)
+      for(let c = 0; c < 3; c++) {
+        for (let r = 0; r < 3;r++) {
+          this.cells[middleW - 1 + c][middleH - 1 + r] = structure[c][r];
+        }
+      }
     }
-    console.log(this.getLivingNeighbors(middleW-1,middleH-1) );
-    console.log(this.getLivingNeighbors(middleW,middleH-1));
-    console.log(this.getLivingNeighbors(middleW+1,middleH-1));
-    console.log(this.getLivingNeighbors(middleW-1,middleH));
-    console.log(this.getLivingNeighbors(middleW,middleH));
-    console.log(this.getLivingNeighbors(middleW+1,middleH));
-    console.log(this.getLivingNeighbors(middleW-1,middleH+1));
-    console.log(this.getLivingNeighbors(middleW,middleH+1));
-    console.log(this.getLivingNeighbors(middleW+1,middleH+1));
   }
 
   update() {
