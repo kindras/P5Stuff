@@ -34,8 +34,14 @@ function draw() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  cols = min(cols, floor(width / colSize));
-  rows = min(rows, floor(height / rowSize));
+  let newCols = floor(width / colSize);
+  rows = floor(height / rowSize);
+  if(newCols > cols) {
+    for(i = cols; i < newCols; i++)
+      grid.cells.push([]);
+  }
+  cols = newCols;
+
 }
 
 function mousePressed() {
@@ -97,7 +103,7 @@ class Grid {
       let middleW = floor(random(1, this.cols - 2));
       let middleH = floor(random(1, this.rows - 2));
       let structure = random(structures);
-      console.log(structure) for (let c = 0; c < 3; c++) {
+      for (let c = 0; c < 3; c++) {
         for (let r = 0; r < 3; r++) {
           this.cells[middleW + c][middleH + r] = structure[c][r];
         }
