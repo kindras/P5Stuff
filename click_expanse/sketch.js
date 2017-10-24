@@ -84,31 +84,19 @@ class Grid {
     return this.cells[col][row];
   }
 
-  /* Structures can be:
-     - Blinker
-       3*3
-       ...    .-.
-       --- => .-.
-       ...    .-.
-     - Planner 
-       3*3
-      .-.
-      ..-
-      ---      
-   */
   generateStructures(numberOfStructures) {
     const structures = [
-      [[undefined,undefined,undefined],[true,true,true],[undefined,undefined,undefined]],
-      [[undefined,true,undefined],[undefined,undefined,true],[true,true,true]]
+      [[undefined,undefined,undefined],[true,true,true],[undefined,undefined,undefined]], // Blinker
+      [[undefined,true,undefined],[undefined,undefined,true],[true,true,true]] // Planner
     ];
     for(let i = 0; i < 180; ++i) {
-      let middleW = floor(random(1,this.cols - 1));
-      let middleH = floor(random(1,this.rows - 1));
+      let middleW = floor(random(1,this.cols - 2));
+      let middleH = floor(random(1,this.rows - 2));
       let structure = random(structures);
       console.log(structure)
       for(let c = 0; c < 3; c++) {
         for (let r = 0; r < 3;r++) {
-          this.cells[middleW - 1 + c][middleH - 1 + r] = structure[c][r];
+          this.cells[middleW + c][middleH + r] = structure[c][r];
         }
       }
     }
