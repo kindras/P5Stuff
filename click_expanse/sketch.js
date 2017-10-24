@@ -4,6 +4,7 @@ let grid;
 let colSize = rowSize = 20;
 let rows;
 let cols;
+let oscillator;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -14,6 +15,12 @@ function setup() {
   cols = floor(width / colSize);
   grid = new Grid(cols, rows);
   frameRate(10);
+
+  oscillator = new p5.Oscillator();
+  oscillator.setType('square');
+  oscillator.freq(440);
+  oscillator.amp(0);
+  oscillator.start();
 }
 
 function draw() {
@@ -113,20 +120,37 @@ class Grid {
 
   update() {
     let tempCells = new Array(cols);
+    let oldCells = 0;
+    let newCells = 0;
     for (var col = 0; col < cols; col++) {
       tempCells[col] = new Array(rows);
-      }
+    }
+
     for (let col = 1; col < cols - 1; ++col) {
       for (let row = 1; row < rows - 1; ++row) {
+        oldCells += this.getCell(col, row) ? 1:0;
         let livingCells = this.getLivingNeighbors(col, row);
         if (livingCells == 3) {
           tempCells[col][row] = true;
         } else if (livingCells == 2) {
           tempCells[col][row] = this.cells[col][row];
         }
+
+        if(tempCells[col][row])
+          newCells ++;
       }
     }
     this.cells = tempCells;
+
+    if(newCells > oldCells) {
+      oscillator.freq(map(newCells - oldCells, 1, 10, 500,650));
+      oscillator.amp(0.5,0.1);
+    } else if(newCells < oldCells)  {
+      oscillator.freq(map(oldCells - newCells, 1, 10, 350,480));
+      oscillator.amp(0.5,0.1);
+    } else {
+      oscillator.amp(0,0.1);
+    }
   }
   getLivingNeighbors(col, row) {
     let counter = 0;
