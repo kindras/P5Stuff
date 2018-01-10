@@ -56,3 +56,9 @@ function setup() {
 	lSystem.addLetter(']',() =>  pop());
 	createP(lSystem.axiom);	
 }
+
+function generate() {
+	lSystem.generateNextStep();
+	document.getElementById('step').innerHTML = lSystem.step;
+	document.getElementById('details').style['background-color'] = random(['black','red']);
+}

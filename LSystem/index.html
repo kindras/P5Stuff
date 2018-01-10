@@ -11,7 +11,7 @@
 	<script src="libraries/p5.dom.js"></script>
 	<script src="libraries/p5.sound.js"></script>
 	<script src="sketch.js"></script>
-
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
 	<style>
 		body {
 			margin:0;
@@ -21,8 +21,24 @@
 		canvas {
 			margin:auto;
 		}
+		.ontop {
+			position: absolute;
+			left:5px;
+			top:5px;
+			background-color: beige;
+			width:auto;
+			padding:5px;
+		}
 	</style>
 </head>
 <body>
+	<div id="details" class="ontop container">
+		<div class="detail">
+			<button type="button" class="btn btn-primary" type="button" onclick="generate()">Generate</button>
+		</div>
+		<div class="detail">
+			Step: <span id="step">0</span>
+		</div>
+	</div>
 </body>
 </html>
