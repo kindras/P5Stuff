@@ -7,6 +7,11 @@ class LSystem {
 		this.step = 0;
 	}
 
+	reset() {
+		this.sentence = this.axiom;
+		this.step = 0;
+	}
+
 	addLetter(letter, action, rule) {
 		if(rule) {
 			this.rules[letter] = rule;
@@ -60,5 +65,12 @@ function setup() {
 function generate() {
 	lSystem.generateNextStep();
 	document.getElementById('step').innerHTML = lSystem.step;
-	document.getElementById('details').style['background-color'] = random(['black','red']);
+}
+
+function reset() {
+	let rule = document.getElementById('rule');
+	if(rule && rule.value != '') {
+		lSystem.rules['F'] = rule.value;
+		lSystem.reset();
+	}
 }

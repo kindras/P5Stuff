@@ -33,11 +33,18 @@
 </head>
 <body>
 	<div id="details" class="ontop container">
-		<div class="detail">
-			<button type="button" class="btn btn-primary" type="button" onclick="generate()">Generate</button>
+		<div class="form-group">
+			<button type="button" class="btn btn-primary" onclick="generate()">Generate</button>
 		</div>
-		<div class="detail">
-			Step: <span id="step">0</span>
+		<div class="form-group">
+			Step <span id="step">0</span>
+		</div>
+		<div class="form-group">
+			<label for="rule">F rule</label>
+			<input id="rule" class="form-control" type="text"/>
+		</div>
+		<div class="form-group">
+			<button type="button" class="btn btn-secondary" onclick="reset()">Reset</button>
 		</div>
 	</div>
 </body>
