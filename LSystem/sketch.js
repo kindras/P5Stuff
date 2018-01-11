@@ -7,9 +7,22 @@ class LSystem {
 		this.step = 0;
 	}
 
+	validateFRule(rule) {
+		for(const letter of rule) {
+			if(!this.actions[letter]) {
+				return false;
+			}
+		}
+		this.rules['F'] = rule;
+		this.reset();
+		return true;
+	}
+
 	reset() {
 		this.sentence = this.axiom;
 		this.step = 0;
+		background(51);
+		resetMatrix();
 	}
 
 	addLetter(letter, action, rule) {
@@ -22,7 +35,6 @@ class LSystem {
 	generateNextStep() {
 		background(51);
 		resetMatrix();
-		text(this.step, 30,30);
 		translate(width/2,height);
 		let nextSentence = "";
 		for (const letter of this.sentence) {
@@ -59,7 +71,6 @@ function setup() {
 	lSystem.addLetter('-',() =>  rotate(-PI/6));
 	lSystem.addLetter('[',() =>  push());
 	lSystem.addLetter(']',() =>  pop());
-	createP(lSystem.axiom);	
 }
 
 function generate() {
@@ -69,8 +80,7 @@ function generate() {
 
 function reset() {
 	let rule = document.getElementById('rule');
-	if(rule && rule.value != '') {
-		lSystem.rules['F'] = rule.value;
-		lSystem.reset();
+	if(!rule || rule.value == '' || !lSystem.validateFRule(rule.value)) {
+		// rule is not valid..
 	}
 }

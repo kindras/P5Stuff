@@ -9,7 +9,7 @@
 
 	<script src="libraries/p5.js"></script>
 	<script src="libraries/p5.dom.js"></script>
-	<script src="libraries/p5.sound.js"></script>
+	<script src="libraries/interact.min.js"></script>
 	<script src="sketch.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
 	<style>
@@ -32,7 +32,8 @@
 	</style>
 </head>
 <body>
-	<div id="details" class="ontop container">
+	<script src="domManipulation.js"></script>
+	<div id="details" class="ontop container draggable">
 		<div class="form-group">
 			<button type="button" class="btn btn-primary" onclick="generate()">Generate</button>
 		</div>
